@@ -45,7 +45,7 @@ The coded observations are formalized into recommendation logic at three levels:
 
 ### 3. Prototype development
 
-A prototype recommendation tool was developed in Python with an interactive `ipywidgets` interface (`notebooks/02_interactive_tool.ipynb`). Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks.
+A prototype recommendation tool was developed in Python with an interactive `ipywidgets` interface (`notebooks/02_interactive_tool.ipynb`). Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks. A second notebook (`notebooks/01_demo_recommendation_tool.ipynb`) runs the same engine on three scenarios without the interface.
 
 ## Recommendation tool
 
@@ -109,13 +109,11 @@ memoire-dashboard-recommendation/
 │       ├── __init__.py
 │       ├── mining.py
 │       ├── recommender.py
-│       ├── ui.py
-│       └── rules_engine.py
+│       └── ui.py
 ├── tests/
 │   ├── test_mining.py
 │   ├── test_recommender.py
-│   ├── test_ui.py
-│   └── test_rules_engine.py
+│   └── test_ui.py
 ├── config/
 │   └── requirements.txt
 └── .gitignore
@@ -127,8 +125,8 @@ Planned folders (not yet in the repository): `data/raw/`, `figures/` and `src/ut
 
 - `reports/`: public version of the thesis.
 - `data/processed/`: anonymized coding grid used to compute the rules.
-- `notebooks/`: `01` is a simplified demo, `02` is the interactive tool.
-- `src/reco_tool/`: `mining.py` extracts the rules, `recommender.py` produces the recommendations, `ui.py` is the `ipywidgets` interface, `rules_engine.py` is the earlier simplified engine used by notebook `01`.
+- `notebooks/`: `01` runs the engine on three scenarios (two thesis use cases and a KPI summary page), `02` is the interactive tool.
+- `src/reco_tool/`: `mining.py` extracts the rules, `recommender.py` produces the recommendations, `ui.py` is the `ipywidgets` interface.
 - `tests/`: unit tests for the engine and the interface.
 - `config/`: project configuration and dependency files.
 - `data/raw/` (planned): placeholders or non-shareable source material.
@@ -180,7 +178,6 @@ Only public, anonymized, transformed, or reproducible materials are intended to 
 - The coding was done by a single analyst, without inter-coder reliability measure.
 - No page of the corpus contains alerts, so the alerts input has no rule of its own.
 - The number of filters is displayed but not used by the rules yet.
-- Notebook `01` and `rules_engine.py` are a simplified, hand-written illustration of the thesis logic and are not the data-driven engine.
 - The tool is a prototype: its recommendations have not been evaluated experimentally with users.
 
 ## Current status
@@ -191,11 +188,11 @@ Available in this repository:
 - the anonymized coding grid
 - the data-driven recommendation engine (Apriori, conditional frequency, fallback) with confidence per recommendation
 - the interactive `ipywidgets` interface
+- a demo notebook running the engine on three scenarios
 - unit tests (`pytest`)
 
 Still in progress:
 
-- migration of the demo notebook `01` to the data-driven engine
 - screenshots and visual examples of the prototype
 - use of the number of filters in the rules
 
@@ -211,6 +208,5 @@ Still in progress:
 Planned additions to the repository include:
 
 - screenshots and visual examples of the prototype in `figures/`
-- a demo notebook based on the data-driven engine
 - rules using the number of filters and the interaction types as inputs
 - double coding of the corpus to measure inter-coder agreement
