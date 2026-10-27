@@ -4,6 +4,24 @@ This repository presents the research and prototype developed as part of a Maste
 
 The project analyzes recurring dashboard design patterns from real-world Power BI dashboards and translates them into an automated recommendation tool built in Python.
 
+## Preview
+
+The tool runs in a Jupyter Notebook with an interactive `ipywidgets` interface:
+
+![Interactive interface of the recommendation tool](figures/01_interface.png)
+
+### Example 1: dense page with a detail table
+
+Input: 4 KPIs, no time series, a detail table, strong information density, weak color and size hierarchy. The tool flags an overload risk (100 % confidence, Apriori rule) and falls back to a Z-pattern layout.
+
+![Recommendation for a dense page with a detail table](figures/02_resultat_surcharge.png)
+
+### Example 2: time-tracking dashboard
+
+Input: 4 KPIs, a time series, a detail table, 3 filters, moderate density, strong color and size hierarchy. The tool recommends a hybrid layout, filters integrated into the visuals (60 %) and adds a line chart to the suggested visuals. No overload rule applies.
+
+![Recommendation for a time-tracking dashboard](figures/03_resultat_suivi_temporel.png)
+
 ## Overview
 
 Interactive dashboards are not only reporting interfaces; they also shape how decision-makers perceive, interpret, and act on data.
@@ -104,6 +122,10 @@ memoire-dashboard-recommendation/
 ├── notebooks/
 │   ├── 01_demo_recommendation_tool.ipynb
 │   └── 02_interactive_tool.ipynb
+├── figures/
+│   ├── 01_interface.png
+│   ├── 02_resultat_surcharge.png
+│   └── 03_resultat_suivi_temporel.png
 ├── src/
 │   └── reco_tool/
 │       ├── __init__.py
@@ -119,19 +141,19 @@ memoire-dashboard-recommendation/
 └── .gitignore
 ```
 
-Planned folders (not yet in the repository): `data/raw/`, `figures/` and `src/utils/`.
+Planned folders (not yet in the repository): `data/raw/` and `src/utils/`.
 
 ### Folder description
 
 - `reports/`: public version of the thesis.
 - `data/processed/`: anonymized coding grid used to compute the rules.
 - `notebooks/`: `01` runs the engine on three scenarios (two thesis use cases and a KPI summary page), `02` is the interactive tool.
+- `figures/`: screenshots of the interface and of two example recommendations.
 - `src/reco_tool/`: `mining.py` extracts the rules, `recommender.py` produces the recommendations, `ui.py` is the `ipywidgets` interface.
 - `tests/`: unit tests for the engine and the interface.
 - `config/`: project configuration and dependency files.
 - `data/raw/` (planned): placeholders or non-shareable source material.
 - `src/utils/` (planned): utility functions for loading and preprocessing data.
-- `figures/` (planned): images, screenshots, and visuals used in the documentation.
 
 ## Tech stack
 
@@ -189,11 +211,11 @@ Available in this repository:
 - the data-driven recommendation engine (Apriori, conditional frequency, fallback) with confidence per recommendation
 - the interactive `ipywidgets` interface
 - a demo notebook running the engine on three scenarios
+- screenshots of the interface and of two example recommendations
 - unit tests (`pytest`)
 
 Still in progress:
 
-- screenshots and visual examples of the prototype
 - use of the number of filters in the rules
 
 ## Thesis information
@@ -207,6 +229,5 @@ Still in progress:
 
 Planned additions to the repository include:
 
-- screenshots and visual examples of the prototype in `figures/`
 - rules using the number of filters and the interaction types as inputs
 - double coding of the corpus to measure inter-coder agreement
