@@ -45,7 +45,7 @@ The coded observations were formalized into recommendation logic using:
 
 ### 3. Prototype development
 
-A prototype recommendation tool was developed in Python and implemented in Jupyter Notebook using `ipywidgets`. Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks.
+A prototype recommendation tool was developed in Python and implemented in Jupyter Notebook using `ipywidgets`. Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks. The current demo notebook runs predefined scenarios; the interactive `ipywidgets` interface is planned.
 
 ## Recommendation tool
 
@@ -68,67 +68,79 @@ It then returns recommendations including:
 - table placement
 - interaction types
 - expected affordance level
-- overload risk with confidence score
+- overload risk with a heuristic confidence score
 
 ## Repository structure
 
 ```text
 memoire-dashboard-recommendation/
 ├── README.md
+├── pytest.ini
 ├── reports/
 │   └── MScDM_2026_PEREZ_KIHOUBA_sa.pdf
-├── data/
-│   ├── raw/
-│   └── processed/
 ├── notebooks/
+│   └── 01_demo_recommendation_tool.ipynb
 ├── src/
-│   ├── reco_tool/
-│   └── utils/
-├── figures/
+│   └── reco_tool/
+│       └── rules_engine.py
+├── tests/
+│   └── test_rules_engine.py
 ├── config/
+│   └── requirements.txt
 └── .gitignore
 ```
+
+Planned folders (not yet in the repository): `data/raw/`, `data/processed/`, `figures/` and `src/utils/`.
 
 ### Folder description
 
 - `reports/`: public version of the thesis.
-- `data/raw/`: placeholders or non-shareable source material.
-- `data/processed/`: processed or anonymized data prepared for analysis.
-- `notebooks/`: exploratory analysis, rule extraction, and prototype notebooks.
+- `notebooks/`: demo and prototype notebooks.
 - `src/reco_tool/`: source code for the recommendation engine.
-- `src/utils/`: utility functions for loading and preprocessing data.
-- `figures/`: images, screenshots, and visuals used in the documentation.
+- `tests/`: unit tests for the recommendation engine.
 - `config/`: project configuration and dependency files.
+- `data/raw/` (planned): placeholders or non-shareable source material.
+- `data/processed/` (planned): processed or anonymized data prepared for analysis.
+- `src/utils/` (planned): utility functions for loading and preprocessing data.
+- `figures/` (planned): images, screenshots, and visuals used in the documentation.
 
 ## Tech stack
 
 - Python
 - Jupyter Notebook
 - ipywidgets
+- pytest
 - Power BI
 - Association rule mining
 - Data visualization and dashboard analysis
 
 ## Setup
 
-To clone and explore the project locally:
+Requirements: Python 3.11 or higher.
 
 ```bash
 git clone git@github.com:DorianKi/memoire-dashboard-recommendation.git
 cd memoire-dashboard-recommendation
-```
-
-If dependency files are added later, install them with one of the following:
-
-```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r config/requirements.txt
 ```
 
-or
+Then open `notebooks/01_demo_recommendation_tool.ipynb` with Jupyter.
+
+## Tests
 
 ```bash
-conda env create -f config/environment.yml
+pytest -v
 ```
+
+The unit tests in `tests/` cover the layout rules, placements, overload risk, confidence score and input validation.
+
+## Limitations
+
+- The rules in `src/reco_tool/rules_engine.py` are a simplified, hand-written illustration of the thesis logic. The Apriori-based rules extracted from the full corpus are described in the thesis but are not yet included in this repository.
+- The confidence score is a fixed heuristic based on how many signals support a rule. It is not derived from association rule statistics.
+- The original corpus (35 internal Power BI dashboard pages) cannot be shared for confidentiality reasons.
 
 ## Confidentiality
 
