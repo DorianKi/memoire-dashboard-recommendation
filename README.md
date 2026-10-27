@@ -24,7 +24,7 @@ The methodology combines empirical analysis and prototype development.
 
 ### 1. Dashboard corpus analysis
 
-A corpus of 35 internal Power BI dashboard pages was analyzed through a manually constructed coding grid made of 29 variables. The analysis focused on structural and visual dimensions such as:
+A corpus of internal Power BI dashboards (13 dashboards) was analyzed through a manually constructed coding grid made of 29 variables. The anonymized grid shared in this repository contains 34 coded pages. The analysis focused on structural and visual dimensions such as:
 
 - dominant layout
 - KPI placement
@@ -37,26 +37,26 @@ A corpus of 35 internal Power BI dashboard pages was analyzed through a manually
 
 ### 2. Rule extraction
 
-The coded observations were formalized into recommendation logic using:
+The coded observations are formalized into recommendation logic at three levels:
 
-- association rules with the Apriori algorithm
-- conditional frequency analysis
-- a fallback logic for rare or uncovered configurations
+1. **Association rules (Apriori)**: minimum support 0.40, minimum confidence 0.90, lift above 1. On the shared grid this gives 119 frequent itemsets and 27 useful rules, mainly predicting the overload risk.
+2. **Conditional frequency analysis**: for placements (layout, KPI, series, table, filters) and interaction types, the dominant value for a given context, with at least 5 observations and 60 % frequency.
+3. **Fallback logic**: a simple rule based on the elements present when no rule covers the submitted configuration.
 
 ### 3. Prototype development
 
-A prototype recommendation tool was developed in Python and implemented in Jupyter Notebook using `ipywidgets`. Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks. The current demo notebook runs predefined scenarios; the interactive `ipywidgets` interface is planned.
+A prototype recommendation tool was developed in Python with an interactive `ipywidgets` interface (`notebooks/02_interactive_tool.ipynb`). Based on user-defined dashboard characteristics, the tool recommends structural choices and highlights potential overload risks.
 
 ## Recommendation tool
 
 The prototype takes dashboard design inputs such as:
 
-- number of KPIs
+- presence and number of KPIs
 - presence of time series
 - presence of detail tables
 - presence of alerts
-- number of filters
-- desired information density
+- number of filters (displayed in the interface, not used by the rules yet)
+- information density
 - color hierarchy level
 - size hierarchy level
 
@@ -64,11 +64,31 @@ It then returns recommendations including:
 
 - suggested layout
 - KPI placement
-- filter placement
-- table placement
+- time series, table and filter placement
 - interaction types
+- dominant visual type and recommended visuals
 - expected affordance level
-- overload risk with a heuristic confidence score
+- overload risk
+
+Each rule-based recommendation comes with a confidence percentage computed from the grid and with its source (Apriori, conditional frequency, grid threshold or fallback).
+
+### Use from Python
+
+From the repository root, with `src` on the Python path:
+
+```python
+import sys
+sys.path.append("src")
+
+from reco_tool import recommander
+
+reco = recommander(
+    kpi_present="Oui", nb_kpi=4, serie_present="Oui", table_present="Oui",
+    densite="Forte", hierarchie_couleur="Faible", hierarchie_taille="Faible",
+)
+print(reco["Risques_surcharge"])
+# {'valeur': 'Oui', 'confiance': 100.0, 'source': 'apriori', 'n': None}
+```
 
 ## Repository structure
 
@@ -78,41 +98,50 @@ memoire-dashboard-recommendation/
 ├── pytest.ini
 ├── reports/
 │   └── MScDM_2026_PEREZ_KIHOUBA_sa.pdf
+├── data/
+│   └── processed/
+│       └── grille_analyse_anonymisee.csv
 ├── notebooks/
-│   └── 01_demo_recommendation_tool.ipynb
+│   ├── 01_demo_recommendation_tool.ipynb
+│   └── 02_interactive_tool.ipynb
 ├── src/
 │   └── reco_tool/
+│       ├── __init__.py
+│       ├── mining.py
+│       ├── recommender.py
+│       ├── ui.py
 │       └── rules_engine.py
 ├── tests/
+│   ├── test_mining.py
+│   ├── test_recommender.py
+│   ├── test_ui.py
 │   └── test_rules_engine.py
 ├── config/
 │   └── requirements.txt
 └── .gitignore
 ```
 
-Planned folders (not yet in the repository): `data/raw/`, `data/processed/`, `figures/` and `src/utils/`.
+Planned folders (not yet in the repository): `data/raw/`, `figures/` and `src/utils/`.
 
 ### Folder description
 
 - `reports/`: public version of the thesis.
-- `notebooks/`: demo and prototype notebooks.
-- `src/reco_tool/`: source code for the recommendation engine.
-- `tests/`: unit tests for the recommendation engine.
+- `data/processed/`: anonymized coding grid used to compute the rules.
+- `notebooks/`: `01` is a simplified demo, `02` is the interactive tool.
+- `src/reco_tool/`: `mining.py` extracts the rules, `recommender.py` produces the recommendations, `ui.py` is the `ipywidgets` interface, `rules_engine.py` is the earlier simplified engine used by notebook `01`.
+- `tests/`: unit tests for the engine and the interface.
 - `config/`: project configuration and dependency files.
 - `data/raw/` (planned): placeholders or non-shareable source material.
-- `data/processed/` (planned): processed or anonymized data prepared for analysis.
 - `src/utils/` (planned): utility functions for loading and preprocessing data.
 - `figures/` (planned): images, screenshots, and visuals used in the documentation.
 
 ## Tech stack
 
-- Python
-- Jupyter Notebook
-- ipywidgets
+- Python and pandas
+- Jupyter Notebook and ipywidgets
 - pytest
-- Power BI
-- Association rule mining
-- Data visualization and dashboard analysis
+- Power BI (source of the analyzed dashboards)
+- Association rule mining (Apriori) and conditional frequency analysis
 
 ## Setup
 
@@ -124,9 +153,10 @@ cd memoire-dashboard-recommendation
 python -m venv .venv
 source .venv/bin/activate
 pip install -r config/requirements.txt
+jupyter notebook notebooks/02_interactive_tool.ipynb
 ```
 
-Then open `notebooks/01_demo_recommendation_tool.ipynb` with Jupyter.
+Run the cell, then click the **Obtenir recommandations** button.
 
 ## Tests
 
@@ -134,34 +164,40 @@ Then open `notebooks/01_demo_recommendation_tool.ipynb` with Jupyter.
 pytest -v
 ```
 
-The unit tests in `tests/` cover the layout rules, placements, overload risk, confidence score and input validation.
+The tests check that the rule extraction reproduces the thesis figures on the shared grid (34 pages, 119 frequent itemsets, 27 Apriori rules), the recommendations of the two use cases, the KPI thresholds, the fallback logic, input validation and the HTML rendering.
 
-## Limitations
-
-- The rules in `src/reco_tool/rules_engine.py` are a simplified, hand-written illustration of the thesis logic. The Apriori-based rules extracted from the full corpus are described in the thesis but are not yet included in this repository.
-- The confidence score is a fixed heuristic based on how many signals support a rule. It is not derived from association rule statistics.
-- The original corpus (35 internal Power BI dashboard pages) cannot be shared for confidentiality reasons.
-
-## Confidentiality
+## Data and confidentiality
 
 This repository does not publish confidential internal dashboards from Orange Business.
 
-Only public, anonymized, transformed, or reproducible materials are intended to be shared here. Some elements of the original research corpus cannot be released due to professional confidentiality constraints.
+`data/processed/grille_analyse_anonymisee.csv` contains the coding grid only: one row per page, identified by codes such as D1-P1. Dashboard names, page names and comments have been removed. Values are kept as coded (for example `Moderee` without accent).
+
+Only public, anonymized, transformed, or reproducible materials are intended to be shared here.
+
+## Limitations
+
+- The corpus is small (34 pages from 13 dashboards) and comes from a single organization and tool (Power BI). The rules describe associations observed in this corpus, not causal relationships.
+- The coding was done by a single analyst, without inter-coder reliability measure.
+- No page of the corpus contains alerts, so the alerts input has no rule of its own.
+- The number of filters is displayed but not used by the rules yet.
+- Notebook `01` and `rules_engine.py` are a simplified, hand-written illustration of the thesis logic and are not the data-driven engine.
+- The tool is a prototype: its recommendations have not been evaluated experimentally with users.
 
 ## Current status
 
 Available in this repository:
 
 - the public version of the thesis
-- a demo notebook running the recommendation tool on three scenarios
-- a simplified recommendation engine with input validation and a heuristic confidence score
+- the anonymized coding grid
+- the data-driven recommendation engine (Apriori, conditional frequency, fallback) with confidence per recommendation
+- the interactive `ipywidgets` interface
 - unit tests (`pytest`)
 
 Still in progress:
 
-- the interactive `ipywidgets` interface
+- migration of the demo notebook `01` to the data-driven engine
 - screenshots and visual examples of the prototype
-- anonymized or reproducible analytical material
+- use of the number of filters in the rules
 
 ## Thesis information
 
@@ -174,7 +210,7 @@ Still in progress:
 
 Planned additions to the repository include:
 
-- cleaned and shareable analytical material
-- an interactive `ipywidgets` interface for the recommendation tool
-- recommendation rules derived from the Apriori analysis, using anonymized or reproducible data
-- visual examples and screenshots of the prototype
+- screenshots and visual examples of the prototype in `figures/`
+- a demo notebook based on the data-driven engine
+- rules using the number of filters and the interaction types as inputs
+- double coding of the corpus to measure inter-coder agreement
