@@ -76,7 +76,7 @@ It then returns recommendations including:
 memoire-dashboard-recommendation/
 ├── README.md
 ├── reports/
-│   └── memoire_MScDM_2026_public.pdf
+│   └── MScDM_2026_PEREZ_KIHOUBA_sa.pdf
 ├── data/
 │   ├── raw/
 │   └── processed/
