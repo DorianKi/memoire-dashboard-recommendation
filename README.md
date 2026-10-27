@@ -150,12 +150,18 @@ Only public, anonymized, transformed, or reproducible materials are intended to 
 
 ## Current status
 
-This repository is being progressively expanded to include:
+Available in this repository:
 
 - the public version of the thesis
-- selected notebooks used for analysis
-- a simplified or reproducible version of the recommendation tool
-- supporting figures and examples
+- a demo notebook running the recommendation tool on three scenarios
+- a simplified recommendation engine with input validation and a heuristic confidence score
+- unit tests (`pytest`)
+
+Still in progress:
+
+- the interactive `ipywidgets` interface
+- screenshots and visual examples of the prototype
+- anonymized or reproducible analytical material
 
 ## Thesis information
 
@@ -169,6 +175,6 @@ This repository is being progressively expanded to include:
 Planned additions to the repository include:
 
 - cleaned and shareable analytical material
-- a demonstration notebook for the recommendation tool
-- reusable Python modules for recommendation rules
+- an interactive `ipywidgets` interface for the recommendation tool
+- recommendation rules derived from the Apriori analysis, using anonymized or reproducible data
 - visual examples and screenshots of the prototype
